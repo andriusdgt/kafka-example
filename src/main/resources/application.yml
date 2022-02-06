@@ -1,0 +1,26 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  cloud.stream:
+    kafka:
+      binder:
+        zkNodes: localhost
+        brokers: localhost
+      bindings:
+        payment-deposited-input:
+          consumer:
+            configuration:
+              value.deserializer: com.example.project.config.kafka.PaymentDepositedDeserializer
+
+    bindings:
+      payment-deposited-input:
+        destination: payment-deposited
+        group: kafka-hello
+        consumer:
+          headerMode: headers
+          concurrency: 8
+          batch-mode: true
+      payment-deposited-output:
+        destination: payment-deposited
+        producer:
+          headerMode: none
