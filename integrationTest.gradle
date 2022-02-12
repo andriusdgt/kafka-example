@@ -1,0 +1,13 @@
+idea {
+    module {
+        testSourceDirs += [
+                file('src/integration-test/java'),
+        ]
+    }
+}
+
+testSets {
+    integrationTest { dirName = 'integration-test' }
+}
+
+integrationTest.outputs.upToDateWhen { false }
