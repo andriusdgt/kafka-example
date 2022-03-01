@@ -42,7 +42,7 @@ dependencyManagement {
 }
 
 application {
-    mainClass = 'com.example.project.Main'
+    mainClass = 'com.example.project.KafkaExampleApplication'
 }
 
 java {
