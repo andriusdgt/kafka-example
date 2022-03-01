@@ -7,7 +7,7 @@
 
 ## Running 
 
-To start Kafka `docker-compose.yml` can be reused for convenience if docker is installed, use this command in terminal: 
+To start Kafka `docker-compose.yml` file can be reused for convenience if docker is installed, use this command in terminal: 
 
 `docker-compose up -d`
 
