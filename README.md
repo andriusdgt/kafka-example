@@ -9,7 +9,7 @@ It's a project demonstrating how to integrate Kafka framework into Java Spring p
 ## Prerequisites
 
 1. JDK 11 installed
-2. Kafka brokers and zookeeper launched either locally or as docker containers
+2. Kafka brokers and zookeeper launched either from install location or as docker containers
 
 ## Running 
 
