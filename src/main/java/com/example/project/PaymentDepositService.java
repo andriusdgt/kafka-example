@@ -10,6 +10,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.Currency;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,8 +49,8 @@ public class PaymentDepositService {
     }
 
     public void sendDeposit() {
-        PaymentDeposit paymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
-        channel.send(dtoSerializer.serialize(paymentDeposit));
+        PaymentDeposit pd = new PaymentDeposit("777", Currency.getInstance("EUR"), BigInteger.valueOf(12000));
+        channel.send(dtoSerializer.serialize(pd));
     }
 
 }

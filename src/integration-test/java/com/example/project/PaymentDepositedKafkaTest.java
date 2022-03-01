@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigInteger;
+import java.util.Currency;
 import java.util.Map;
 
 import static com.example.project.config.kafka.PaymentDepositProcessor.PAYMENT_DEPOSITED_INPUT;
@@ -54,7 +55,8 @@ class PaymentDepositedKafkaTest {
 
     @Test
     void receivesPaymentDeposit() {
-        PaymentDeposit expectedPaymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
+        PaymentDeposit expectedPaymentDeposit =
+                new PaymentDeposit("777", Currency.getInstance("EUR"), BigInteger.valueOf(12000));
 
         kafkaTemplate.send(new ProducerRecord<>(KAFKA_TOPIC, toJsonNode(expectedPaymentDeposit).toString()));
 
@@ -63,7 +65,8 @@ class PaymentDepositedKafkaTest {
 
     @Test
     void sendsPaymentDeposit() {
-        PaymentDeposit expectedPaymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
+        PaymentDeposit expectedPaymentDeposit =
+                new PaymentDeposit("777", Currency.getInstance("EUR"), BigInteger.valueOf(12000));
 
         paymentDepositService.sendDeposit();
 
@@ -73,7 +76,7 @@ class PaymentDepositedKafkaTest {
     private JsonNode toJsonNode(PaymentDeposit pd) {
         return JsonNodeFactory.instance.objectNode()
                 .put("account_id", pd.getAccountId())
-                .put("currency", pd.getCurrency())
+                .put("currency", pd.getCurrency().toString())
                 .put("sum", pd.getSum());
     }
 

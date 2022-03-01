@@ -15,7 +15,7 @@ spring:
     bindings:
       payment-deposited-input:
         destination: payment-deposited
-        group: kafka-hello
+        group: kafka-example
         consumer:
           headerMode: headers
           concurrency: 8
