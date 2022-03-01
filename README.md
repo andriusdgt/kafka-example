@@ -1,5 +1,11 @@
 # kafka-example
 
+It's a project demonstrating how to integrate Kafka framework into Java Spring project. Notable characteristics of this setup:
+
+1. Annotation-driven to minimize boilerplate code
+2. Integration tests rely on locally launched Kafka dependencies to enable testability of beans  
+3. Example object is sent using JSON serialization/deserialization
+
 ## Prerequisites
 
 1. JDK 11 installed
