@@ -56,7 +56,7 @@ class PaymentDepositedKafkaTest {
     @Test
     void receivesPaymentDeposit() {
         PaymentDeposit expectedPaymentDeposit =
-                new PaymentDeposit("777", Currency.getInstance("EUR"), BigInteger.valueOf(12000));
+                new PaymentDeposit("778", Currency.getInstance("EUR"), BigInteger.valueOf(12000));
 
         kafkaTemplate.send(new ProducerRecord<>(KAFKA_TOPIC, toJsonNode(expectedPaymentDeposit).toString()));
 
