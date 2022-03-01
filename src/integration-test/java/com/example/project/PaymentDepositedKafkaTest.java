@@ -1,7 +1,6 @@
 package com.example.project;
 
 import com.example.project.domain.PaymentDeposit;
-import com.example.project.kafka.KafkaUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -9,11 +8,10 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,49 +24,50 @@ import static com.example.project.config.kafka.PaymentDepositProcessor.PAYMENT_D
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-@IntegrationTest
-@EmbeddedKafka(ports = 9094, topics = PAYMENT_DEPOSITED_INPUT)
 @ActiveProfiles({"test"})
 @TestPropertySource(properties = {
-        "spring.cloud.stream.kafka.binder.brokers=localhost:9094",
         "spring.cloud.stream.bindings.payment-deposited-input.consumer.concurrency=1",
         "spring.cloud.stream.kafka.bindings.payment-deposited-input.consumer.configuration.max.poll.records=1"
 })
 @DirtiesContext
+@SpringBootTest
 class PaymentDepositedKafkaTest {
 
     private static final String KAFKA_TOPIC = PAYMENT_DEPOSITED_INPUT;
 
-    @Autowired
-    private KafkaUtils kafkaUtils;
-
-    @Autowired
-    private EmbeddedKafkaBroker kafkaEmbedded;
-
-    @Autowired
+    @SpyBean
     private PaymentDepositService paymentDepositService;
+
+    @SpyBean
+    private PaymentDepositHandler paymentDepositHandler;
 
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @BeforeEach
     void setUp() {
-
-        Map<String, Object> producerProperties = KafkaTestUtils.producerProps(kafkaEmbedded);
+        Map<String, Object> producerProperties = KafkaTestUtils.producerProps("localhost:9092");
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerProperties));
         kafkaTemplate.setDefaultTopic(KAFKA_TOPIC);
+    }
 
-        kafkaUtils.waitUntilPartitionsAssigned();
+    @Test
+    void receivesPaymentDeposit() {
+        PaymentDeposit expectedPaymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
+
+        kafkaTemplate.send(new ProducerRecord<>(KAFKA_TOPIC, toJsonNode(expectedPaymentDeposit).toString()));
+
+        verify(paymentDepositService, timeout(1000)).receiveDeposit(expectedPaymentDeposit);
     }
 
     @Test
     void sendsPaymentDeposit() {
-        PaymentDeposit expectedPaymentDeposit = new PaymentDeposit("777", "Euro", BigInteger.valueOf(12000));
+        PaymentDeposit expectedPaymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
 
-        kafkaTemplate.send(new ProducerRecord<>(KAFKA_TOPIC, toJsonNode(expectedPaymentDeposit).toString()));
+        paymentDepositService.sendDeposit();
 
-        verify(paymentDepositService, timeout(5000)).receiveDeposit(expectedPaymentDeposit);
+        verify(paymentDepositHandler, timeout(1000)).handle(expectedPaymentDeposit);
     }
 
     private JsonNode toJsonNode(PaymentDeposit pd) {

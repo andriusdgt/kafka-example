@@ -39,7 +39,7 @@ public class PaymentDepositService {
                         sendDeposit();
                     }
                 },
-                3000
+                7000
         );
     }
 
@@ -48,7 +48,7 @@ public class PaymentDepositService {
     }
 
     public void sendDeposit() {
-        PaymentDeposit paymentDeposit = new PaymentDeposit("777", "Euro", BigInteger.valueOf(12000));
+        PaymentDeposit paymentDeposit = new PaymentDeposit("777", "EUR", BigInteger.valueOf(12000));
         channel.send(dtoSerializer.serialize(paymentDeposit));
     }
 
