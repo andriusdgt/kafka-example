@@ -1,6 +1,10 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   cloud.stream:
     kafka:
       binder:
