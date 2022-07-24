@@ -1,3 +1,5 @@
+application-name: my-spring-kafka-app
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -10,7 +12,7 @@ spring:
   cloud:
     stream:
       default:
-        group: my-spring-kafka-app
+        group: ${application-name}
       kafka:
         binder:
           zkNodes: localhost
@@ -18,8 +20,14 @@ spring:
           auto-create-topics: false
 
       bindings:
-        payment-deposited:
+        payment-deposited-processable:
           destination: payment-deposited
           consumer:
             headerMode: headers
-            concurrency: 2
+            concurrency: 1
+        payment-deposited-notification:
+          destination: payment-deposited
+          group: ${application-name}-notifications
+          consumer:
+            headerMode: headers
+            concurrency: 1

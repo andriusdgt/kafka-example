@@ -21,20 +21,20 @@ import java.math.BigInteger;
 import java.util.Currency;
 import java.util.Map;
 
-import static com.example.project.config.kafka.PaymentDepositProcessor.PAYMENT_DEPOSITED_INPUT;
+import static com.example.project.config.kafka.PaymentDepositProcessor.PAYMENT_DEPOSITED_TOPIC_NAME;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 @ActiveProfiles({"test"})
 @TestPropertySource(properties = {
-        "spring.cloud.stream.bindings.payment-deposited-input.consumer.concurrency=1",
-        "spring.cloud.stream.kafka.bindings.payment-deposited-input.consumer.configuration.max.poll.records=1"
+        "spring.cloud.stream.bindings.payment-deposited.consumer.concurrency=1",
+        "spring.cloud.stream.kafka.bindings.payment-deposited.consumer.configuration.max.poll.records=1"
 })
 @DirtiesContext
 @SpringBootTest
 class PaymentDepositedKafkaTest {
 
-    private static final String KAFKA_TOPIC = PAYMENT_DEPOSITED_INPUT;
+    private static final String KAFKA_TOPIC = PAYMENT_DEPOSITED_TOPIC_NAME;
 
     @SpyBean
     private PaymentDepositService paymentDepositService;
