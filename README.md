@@ -24,3 +24,12 @@ To run Spring app and observe how producer and consumer is working run the app w
 To launch integration test suite, use this command:
 
 `./gradlew integrationTest`
+
+## Send and receive Kafka events
+
+For demo purposes it's enough to invoke this REST endpoint: 
+
+```http request
+curl --request POST \
+  --url http://localhost:8080/payment/deposit/send
+```
