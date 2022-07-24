@@ -31,7 +31,7 @@ public class PaymentDepositService {
 
     public void sendNotification(PaymentDeposit paymentDeposit) {
         LOGGER.info("Sending Mobile notification for paymentDeposit: {}", paymentDeposit);
-        processDeposit();
+        invokeNotificationsAPI();
         LOGGER.info("Notification sent for paymentDeposit: {}", paymentDeposit);
     }
 
@@ -44,12 +44,20 @@ public class PaymentDepositService {
     }
 
     public void processDeposit() {
+        doSomeLongRunningTask();
+    }
+
+    private void invokeNotificationsAPI() {
+        doSomeLongRunningTask();
+    }
+
+    private void doSomeLongRunningTask() {
         // Do some heavy lifting
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
